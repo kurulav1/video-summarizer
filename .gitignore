@@ -1,0 +1,78 @@
+# ⚡ General System Files
+.DS_Store
+Thumbs.db
+
+# 🚀 Python (FastAPI Backend)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.env
+.venv/
+venv/
+instance/
+*.sqlite3
+
+# ⚡ Virtual Environment
+env/
+venv/
+*.venv
+Pipfile
+Pipfile.lock
+
+# ⚡ FastAPI Caches and Logs
+.logs/
+*.log
+*.pid
+*.json
+*.db
+*.sqlite
+
+# 🚀 Node.js (React Frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log
+.vscode/
+
+# ⚡ React Build Artifacts
+build/
+dist/
+*.cache
+.eslintcache
+.next/
+
+# 🚀 Video & Audio Processing Outputs
+downloads/
+videos/
+audio/
+*.mp4
+*.avi
+*.mkv
+*.mp3
+*.wav
+
+# ⚡ PDF Summaries and Transcripts
+*.pdf
+*.md
+*.txt
+summaries/
+transcripts/
+
+# ⚡ Deployment & Docker (Optional)
+docker-compose.override.yml
+docker-compose.yml
+*.dockerignore
+*.swp
+*.swo
+*.swn
+
+# ⚡ IDE Specific
+.vscode/
+.idea/
+*.iml
+
+# ⚡ Miscellaneous
+!**/public/uploads/.gitkeep
