@@ -62,8 +62,8 @@ summaries/
 transcripts/
 
 # ⚡ Deployment & Docker (Optional)
-docker-compose.override.yml
-docker-compose.yml
+#docker-compose.override.yml
+#docker-compose.yml
 *.dockerignore
 *.swp
 *.swo
