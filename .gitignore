@@ -56,8 +56,8 @@ audio/
 
 # ⚡ PDF Summaries and Transcripts
 *.pdf
-*.md
-*.txt
+#*.md
+#*.txt
 summaries/
 transcripts/
 
