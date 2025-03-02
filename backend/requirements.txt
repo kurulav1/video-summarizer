@@ -1,9 +1,14 @@
 fastapi
-uvicorn
+uvicorn[standard]
 python-dotenv
 pydantic
 openai
 whisper
-moviepy
+moviepy==1.0.3
 pdfkit
+python-multipart
 markdown
+asyncio
+uuid
+python-magic  # For file type handling (recommended for file uploads)
+typing-extensions  # Ensures compatibility with Dict, List, etc.

@@ -1,21 +1,16 @@
-# Use official Node.js image
 FROM node:18-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
-# Copy project files
 COPY . .
 
-# Build the React app
+RUN npm install --save-dev typescript @types/react @types/react-dom vite
+
 RUN npm run build
 
-# Expose frontend port
 EXPOSE 5173
 
-# Start the app using serve
-CMD ["npx", "serve", "-s", "build", "-l", "5173"]
+CMD ["sh", "-c", "test -d dist || npm run build && npx serve -s dist -l 5173"]

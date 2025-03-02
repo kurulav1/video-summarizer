@@ -21,6 +21,9 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - /app/node_modules  # Prevents overwriting node_modules
+    environment:
+      - VITE_BACKEND_URL=http://backend:8000  # Use this in your frontend
     restart: always
     depends_on:
       - backend

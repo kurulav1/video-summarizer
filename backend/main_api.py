@@ -97,9 +97,17 @@ class VideoProcessor:
     async def transcribe_audio(self) -> str:
         """ Uses Whisper to transcribe audio with real-time progress updates. """
         await self.send_status("🔄 Transcribing audio with Whisper...", progress=55)
+        
+        print(f"🟡 DEBUG: Starting transcription for {self.audio_path}")
+
         try:
             model = whisper.load_model("base")
+
+            print("🟢 DEBUG: Whisper model loaded successfully.")
+
             result = model.transcribe(self.audio_path, word_timestamps=True)
+
+            print("🟢 DEBUG: Transcription completed.")
 
             total_segments = len(result["segments"])
             for i, segment in enumerate(result["segments"]):
@@ -107,8 +115,13 @@ class VideoProcessor:
                 await self.send_status(f"📝 Transcribing: {segment['text'][:50]}...", progress=progress)
 
             await self.send_status("✅ Audio transcription complete.", progress=70)
+
+            print(f"🟢 DEBUG: Transcription Result: {result['text'][:100]}...")
+
             return result["text"]
+        
         except Exception as e:
+            print(f"❌ DEBUG: Transcription failed with error: {str(e)}")
             await self.send_status(f"❌ Transcription failed: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
 
