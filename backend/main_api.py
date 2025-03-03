@@ -17,7 +17,12 @@ from typing import Dict
 # ✅ Load environment variables
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-WKHTMLTOPDF_PATH = r"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"
+# Detect if running in Docker/Linux
+if os.name == "nt":  # Windows
+    WKHTMLTOPDF_PATH = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+else:  # Linux (Docker)
+    WKHTMLTOPDF_PATH = "/usr/bin/wkhtmltopdf"
+
 
 if not OPENAI_API_KEY:
     raise ValueError("❌ ERROR: OpenAI API key is missing! Please add it to the .env file.")
@@ -170,15 +175,18 @@ class VideoProcessor:
             raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 
 @app.post("/process_video/")
-async def process_video(background_tasks: BackgroundTasks, file: UploadFile = File(...), task_id: str = Form(...)):
+async def process_video(
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+    task_id: str = Form(...)
+):
     """ API Endpoint to process video files """
-    
-    for _ in range(6):  
-        if task_id in active_connections:
-            break
-        await asyncio.sleep(0.5)
 
+    print(f"🟡 DEBUG: Received request with Task ID: {task_id}")
+
+    # Check if WebSocket connection exists
     if task_id not in active_connections:
+        print(f"❌ DEBUG: No active WebSocket connection for Task ID: {task_id}")
         raise HTTPException(status_code=400, detail="No active WebSocket connection for this task.")
 
     processor = VideoProcessor(file, active_connections[task_id], task_id)
@@ -190,9 +198,12 @@ async def process_video(background_tasks: BackgroundTasks, file: UploadFile = Fi
         summary_md = await processor.summarize_text(transcript)
         background_tasks.add_task(processor.save_summary_as_pdf, summary_md)
 
+        print(f"✅ DEBUG: Successfully processed video for Task ID: {task_id}")
+
         return {"summary": summary_md, "pdf": f"/download/{task_id}"}
-    
+
     except HTTPException as e:
+        print(f"❌ DEBUG: Error processing video: {e.detail}")
         return {"error": e.detail}
 
 @app.websocket("/ws/{task_id}")
