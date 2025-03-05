@@ -2,18 +2,22 @@
 
 echo "🚀 Deploying FastAPI & React with Docker..."
 
-# Move to project root
 cd "$(dirname "$0")"
 
-# Parse arguments
 VERBOSE=false
+NO_CACHE=false
+
 for arg in "$@"; do
-    if [ "$arg" == "--verbose" ]; then
-        VERBOSE=true
-    fi
+    case $arg in
+        --verbose)
+            VERBOSE=true
+            ;;
+        --no-cache)
+            NO_CACHE=true
+            ;;
+    esac
 done
 
-# Remove old containers and volumes
 if [ "$VERBOSE" == true ]; then
     echo "🛠 Stopping and removing old containers..."
     docker-compose down -v
@@ -21,25 +25,27 @@ else
     docker-compose down -v > /dev/null 2>&1
 fi
 
-# Remove old frontend build directory
 rm -rf frontend/dist
 
 echo "🛠 Building Docker images..."
 
-if [ "$VERBOSE" == true ]; then
-    docker-compose build --progress=plain
-else
-    docker-compose build > /dev/null 2>&1
+BUILD_CMD="docker-compose build"
+if [ "$NO_CACHE" == true ]; then
+    BUILD_CMD="$BUILD_CMD --no-cache"
 fi
 
-# Start containers
+if [ "$VERBOSE" == true ]; then
+    $BUILD_CMD --progress=plain
+else
+    $BUILD_CMD > /dev/null 2>&1
+fi
+
 if [ "$VERBOSE" == true ]; then
     docker-compose up -d
 else
     docker-compose up -d > /dev/null 2>&1
 fi
 
-# Show running containers
 if [ "$VERBOSE" == true ]; then
     docker ps
 fi
@@ -48,7 +54,6 @@ echo "✅ Deployment complete!"
 echo "📌 Backend running at: http://localhost:8000"
 echo "📌 Frontend running at: http://localhost:5173"
 
-# Show logs if verbose mode is enabled
 if [ "$VERBOSE" == true ]; then
     echo "📜 Backend logs:"
     docker-compose logs backend | tail -n 20
