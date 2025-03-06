@@ -9,6 +9,9 @@ RUN npm install framer-motion --save
 COPY . .
 
 RUN npm install --save-dev typescript @types/react @types/react-dom vite
+RUN npm install framer-motion
+RUN npm install react-icons
+
 
 RUN npm run build
 
